@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>手机功能</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-select.css" rel="stylesheet">
+
+    <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/bootstrap-select.js"></script>
+    <style>
+        .bor{
+            display:block;
+            border:1px solid #000;
+        }
+        .div_bd{
+            height: 870px;
+            width: 949px;
+            background:url(img/iphone6.PNG) center; /*no-repeat 4px 5px*/
+        }
+        .phone_bg{
+            padding: 2px 2px;
+            margin: 208px 0 0 337px;/*定位到手机内部*/
+            height: 488px;
+            width: 274px;
+            border:1px solid #000000;
+        }
+        .icon_size{
+            height: 64px;
+            padding: 5px 5px;
+            margin-top: -20px;
+        }
+        .icon_size_add{
+            height: 64px;
+            padding: 6px 6px;
+        }
+        .app_sel{
+            padding: 0 20px 0 20px;
+            margin: -70px 0 0 350px;
+            /*width: 500px;*/
+            height: 50px;
+            background-color: rgba(203, 203, 203, 0.51);
+            position: absolute;
+        }
+        .remind{
+            margin: -80px 0 0 430px;
+            font-size: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-1 bor div_bd">
+            <div class="phone_bg" id="phone_container">
+                <!--<img src="icon/meg.gif" class="icon_size">-->
+                <!--<img src="icon/calendar.gif" class="icon_size">-->
+                <!--<img src="icon/clock.gif" class="icon_size">-->
+                <!--<img src="icon/map.gif" class="icon_size">-->
+            </div>
+            <div class="remind" >
+                <p id="info">该功能已添加</p>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="app_sel">
+            <img src="icon/meg.gif" class="icon_size" onclick="showSelf(this)" onmouseover="changesize(this)" onmouseout="restoresize(this)" title="message">
+            <img src="icon/calendar.gif" class="icon_size" onclick="showSelf(this)" onmouseover="changesize(this)" onmouseout="restoresize(this)"  title="calendar">
+            <img src="icon/clock.gif" class="icon_size" onclick="showSelf(this)" onmouseover="changesize(this)" onmouseout="restoresize(this)"  title="clock">
+            <img src="icon/map.gif" class="icon_size" onclick="showSelf(this)" onmouseover="changesize(this)" onmouseout="restoresize(this)"  title="map">
+            <img src="icon/camera.gif" class="icon_size" onclick="showSelf(this)" onmouseover="changesize(this)" onmouseout="restoresize(this)"  title="camera">
+            <img src="icon/photo.gif" class="icon_size" onclick="showSelf(this)" onmouseover="changesize(this)" onmouseout="restoresize(this)"  title="photo">
+        </div>
+    </div>
+    <!--<div class="row">
+        <div class="col-lg-offset-3">
+            <img src="img/photo.PNG">
+        </div>
+    </div>-->
+</div>
+<script>
+
+    function showSelf(obj) {
+        console.log(obj.title);
+
+        var title = obj.title;
+        // 添加动画效果
+        $(obj).animate({width:'80px',height:'80px',margin:'-10 0'},'1000');
+        $(obj).animate({width:'64px',height:'64px'},'1000');
+
+        switch (title){
+            case 'message':
+                $('#phone_container').append('<img src="icon/meg.gif" class="icon_size_add">');
+            break;
+            case 'calendar':
+                $('#phone_container').append('<img src="icon/calendar.gif" class="icon_size_add">');
+            break;
+            case 'clock':
+                $('#phone_container').append('<img src="icon/clock.gif" class="icon_size_add">');
+            break;
+            case 'map':
+                $('#phone_container').append('<img src="icon/map.gif" class="icon_size_add">');
+            break;
+            case 'camera':
+                $('#phone_container').append('<img src="icon/camera.gif" class="icon_size_add">');
+            break;
+            case 'photo':
+                $('#phone_container').append('<img src="icon/photo.gif" class="icon_size_add">');
+            break;
+        }
+        // 去除绑定事件
+        $(obj).click(changeClick(obj));
+    }
+
+    function changeClick(obj) {
+        // 去除原有绑定事件
+        $(obj).removeAttr('onclick');
+        $(obj).bind('click',function () {
+            $('#info').html(obj.title+"功能已添加");
+            $('.remind').fadeIn(1000);
+            $('.remind').fadeOut(2000);
+        })
+    }
+
+    // 鼠标经过动画
+    function changesize(obj) {
+        $(obj).animate({width:'80px',height:'80px',margin:'-30 0 0 0'})
+    }
+    // 鼠标离开动画
+    function restoresize(obj) {
+        $(obj).animate({width:'64px',height:'64px',margin:'-20 0 0 0'})
+    }
+
+
+    $(function(){
+        $.post(
+            "/phone/test",
+                {},
+                function(data) {
+                    console.log(data);
+                },"json"
+        )
+    })
+</script>
+</body>
+
+</html>

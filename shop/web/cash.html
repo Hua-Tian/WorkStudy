@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>超市结算</title>
+<!-- <base href="http://localhost:8082/balance/"/> --> <!-- 172.20.2.55 -->
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-select.css" rel="stylesheet">
+
+<script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/bootstrap-select.js"></script>
+ 
+ <style type="text/css">
+ 	.label-user{
+ 		height:34px;
+ 		color:#6d6d6d;
+ 	}
+ 	.row-set{
+ 		display:block;  
+ 		border:0px solid #00f;
+ 		margin-top:5px;
+ 	}
+
+ </style>
+</head>
+<body>
+	
+    <div class="container">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4" >
+				<h2>超市结算系统</h2>
+			</div>
+		</div>
+		<form action="#" method="post">
+		<div class="row row-set">
+			<div class="col-md-3 col-md-offset-4 " >
+				<div class="input-group">
+				  <span class="input-group-addon" id="sizing-addon1">单价：</span>
+				  <input type="text" id="price" class="form-control" placeholder="商品单价" aria-describedby="sizing-addon1">
+				</div>
+			</div>
+		</div>
+		<div class="row row-set">
+			<div class="col-md-3 col-md-offset-4" >
+				<div class="input-group">
+				  <span class="input-group-addon" id="sizing-addon1">数量：</span>
+				  <input type="text" id="amount" class="form-control" placeholder="商品数量" aria-describedby="sizing-addon1">
+				</div>
+			</div>
+		</div>
+		<div class="row row-set">
+			<div class="col-md-3 col-md-offset-4">
+				<select id="costtype" title="请选择收费方式">
+				  <option value="1" selected="selected">正常收费</option>
+				  <!-- <option value="2">打八折</option>
+				  <option value="3">满三百返一百</option> -->
+		       </select>
+			</div>
+		</div>
+		<div class="row row-set">
+			<div class="col-md-3 col-md-offset-4">
+				<textarea id="show" rows="10" cols="34"></textarea>
+			</div>
+		</div>
+		<div class="row row-set">
+			<div class="col-md-3 col-md-offset-4">
+				<h3>
+					<label class="label label-info label-lg">总计： <span id="showtotal"></span></label>
+				</h3>
+			</div>
+		</div>
+		<div class="row row-set">
+			<div class="col-md-3 col-md-offset-4">
+				<button id="cal" class="btn btn-primary btn-block" type="button">确 定</button>
+				<button id="cancle" class="btn btn-primary btn-block" type="reset">重 置</button>
+			</div>
+		</div>
+		</form>
+    </div> <!-- /container -->
+    
+     <script type="text/javascript">
+	    $(function(){
+	    	
+	    	$.post(
+	    		"/shop/getCash",
+	    		{},
+	    		function(data){
+	    			//$('#costtype').empty();
+	    			var sel = '';
+	    			$.each(data.cashs,function(index,cash){
+						sel += '<option value="'+cash.cash_do+'">'+cash.cash_name+'</option>'    				
+	    			});
+	    			
+	    			$("#costtype").append(sel);
+	    			$("#costtype").css("height","30px");
+	    			//$("#costtype").addClass("selectpicker");
+	    		},
+	    		'json'
+	    	)
+	    	
+	    	// 总计
+		    var gettotal = 0;
+		    $('#showtotal').html(gettotal+'元');
+	        $('#cal').click(function(){
+		    	var price = $("#price").val();
+		    	var amount = $("#amount").val();
+		    	var costtype = $("#costtype").val();
+	             $.ajax({
+	                 type: "POST",
+	                 url: "shop/calculate",
+	                 data: {
+	                	 price:price, 
+	                	 amount:amount,
+	                	 costType:costtype 
+	                 },
+	                 dataType: "json",
+	                 success: function(data){
+			                	 var total = data.total;
+			                	 var getval = $('#show').val();
+			                	 $('#show').val(getval+'单价:'+price+'  数量：'+amount+'  合计：'+total+"\n");
+			                	 gettotal = total + gettotal;
+			                	 console.log(gettotal);
+			                	 $('#showtotal').html(gettotal+'元');
+			                	 
+	                          }
+	             });
+	        });
+	        
+	        $('#cancle').click(function(){
+	             // 清空总计
+	             gettotal = 0;
+	        	 $('#showtotal').html(gettotal+'元');
+	        });
+	        
+	    });
+    </script>
+    
+</body>
+</html>
